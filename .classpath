@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hl-common_jdk11_20240815-1518-33.jar"/>
+	<classpathentry kind="lib" path="lib/hl-opencv_jdk11_20240821-2217-44.jar"/>
+	<classpathentry kind="lib" path="lib/json-20220924.jar"/>
+	<classpathentry kind="lib" path="lib/opencv-4100.jar"/>
+	<classpathentry kind="lib" path="lib/hl-objml-plugin-framework_jdk11_20240830-2249-32.jar"/>
+	<classpathentry kind="lib" path="lib/native"/>
+	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolox_jdk11_20240916-1538-11.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
