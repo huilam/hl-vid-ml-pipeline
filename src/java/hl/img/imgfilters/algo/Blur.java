@@ -1,0 +1,25 @@
+package hl.img.imgfilters.algo;
+
+import org.json.JSONObject;
+import org.opencv.core.Mat;
+import hl.img.imgfilters.BasePrivacyMask;
+import hl.img.imgfilters.IPrivacyMask;
+import hl.opencv.util.OpenCvFilters;
+
+public class Blur extends BasePrivacyMask implements IPrivacyMask{
+	
+	private static double DEF_PRIVACY_THRESHOLD = 0.80;
+	private double privacy_threshold 			= DEF_PRIVACY_THRESHOLD;
+
+	@Override
+	protected void applyFilter(Mat aImgMat)
+	{
+		OpenCvFilters.medianBlur(aImgMat, this.privacy_threshold);
+	}
+	
+	@Override
+	public void setThresholds(JSONObject aThresholdJson) {
+		this.privacy_threshold = aThresholdJson.optDouble(
+				"masking_threshold", DEF_PRIVACY_THRESHOLD);
+	}
+}

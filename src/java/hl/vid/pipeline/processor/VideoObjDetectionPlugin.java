@@ -34,7 +34,11 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Rect2d;
 
+import hl.img.imgfilters.IPrivacyMask;
+import hl.img.imgfilters.PrivacyMaskUtil;
 import hl.objml2.common.DetectedObj;
 import hl.objml2.common.DetectedObjUtil;
 import hl.objml2.plugin.ObjDetectionBasePlugin;
@@ -43,6 +47,7 @@ import hl.opencv.video.plugins.VideoFileReEncodingPlugin;
 
 public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 
+	private IPrivacyMask privacymask 			= null;
 	private ObjDetectionBasePlugin[] detectors 	= null;
 	private DetectedObj prevObjs				= null;
 	private JSONObject jsonDetections 			= new JSONObject();
@@ -59,6 +64,10 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 		setQuietMode(true);
 	}
 	
+	public void setPrivacyMaskAlgo(IPrivacyMask aPrivacyMaskAlgo)
+	{
+		this.privacymask = aPrivacyMaskAlgo;
+	}
 	
 	public void addObjOfInterest(String[] aObjClassesOfInterest)
 	{
@@ -166,16 +175,35 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 					
 					sbDetectedObj.append(sClassName).append("(").append(count).append(")");
 					
+					// List of area of interest
+					
+					List<Rect2d> listRect2d = new ArrayList<Rect2d>();
+					
 					// Assign Tracking Id
 					int iSeqNo = 0;
 					for(JSONObject jsonCurObj : jsonDetections)
 					{
+						if(privacymask!=null)
+						{
+							Rect2d objBox 			= DetectedObj.getBoundingBox(jsonCurObj);
+							if(objBox!=null)
+							{
+								listRect2d.add(objBox);
+							}
+						}
+						
 						iSeqNo++;
 						DetectedObj.updObjTrackingId(jsonCurObj, sClassName+"_"+aCurFrameNo+"_"+iSeqNo);
 						if(prevObjs!=null)
 						{
 							DetectedObjUtil.updTrackingIdWithPrevDetections(jsonCurObj, prevObjs, 0.70);
 						}
+					}
+					
+					if(privacymask!=null)
+					{
+						List<MatOfPoint> listMatOfPoint = PrivacyMaskUtil.rectToMatOfPoint(listRect2d);
+						privacymask.mask(matFrame,listMatOfPoint);
 					}
 					
 				}
@@ -190,7 +218,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				
 				prevObjs = objs;
 				Mat matOutput = DetectedObjUtil.annotateImage(matFrame, objs);
-				
+				matFrame.release();
 				matFrame = matOutput;
 			}
 			

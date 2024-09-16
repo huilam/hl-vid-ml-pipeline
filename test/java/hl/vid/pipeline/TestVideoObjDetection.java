@@ -26,6 +26,9 @@ import java.io.File;
 import org.json.JSONObject;
 
 import hl.common.FileUtil;
+import hl.img.imgfilters.IPrivacyMask;
+import hl.img.imgfilters.PrivacyMaskUtil;
+import hl.img.imgfilters.algo.Blur;
 import hl.objml.opencv.objdetection.dnn.plugins.yolo.YoloXDetector;
 import hl.objml2.plugin.ObjDetectionBasePlugin;
 import hl.opencv.util.OpenCvUtil;
@@ -72,8 +75,10 @@ public class TestVideoObjDetection {
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"person","face"});
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"car","bus","truck"});
 
-			VideoProcessor vidProcessor = new VideoProcessor();
+			IPrivacyMask privacyMaskAlgo = PrivacyMaskUtil.getPrivacyMaskInstance("hl.img.imgfilters.algo.SolidFill");
+			vidObjDetectionPlugin.setPrivacyMaskAlgo(privacyMaskAlgo);
 			
+			VideoProcessor vidProcessor = new VideoProcessor();
 			for(File fileVid : getTestVideoFiles())
 			{
 				System.out.println(" Processing "+fileVid.getName()+" ...");
