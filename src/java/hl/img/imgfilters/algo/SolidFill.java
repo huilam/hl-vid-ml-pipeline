@@ -19,14 +19,17 @@ public class SolidFill extends BasePrivacyMask implements IPrivacyMask{
 		OpenCvFilters.solidfill(aImgMat, this.fill_color);
 	}
 	
+	
 	@Override
-	public void setThresholds(JSONObject aThresholdJson) {
-		int iRed 	= aThresholdJson.optInt("Red",	0);
-		int iGreen 	= aThresholdJson.optInt("Green",0);
-		int iBlue 	= aThresholdJson.optInt("Blue", 0);
-		int iAlpha 	= aThresholdJson.optInt("Alpha",0);
+	public void setJsonConfig(JSONObject aJsonConfig) {
+		
+		int iRed 	= aJsonConfig.optInt("red",	0);
+		int iGreen 	= aJsonConfig.optInt("green",0);
+		int iBlue 	= aJsonConfig.optInt("blue", 0);
+		int iAlpha 	= aJsonConfig.optInt("alpha",0);
 		
 		//Blue, Green, Red, Alpha
 		this.fill_color = new Scalar(iGreen, iBlue, iRed, iAlpha);
+		
 	}
 }

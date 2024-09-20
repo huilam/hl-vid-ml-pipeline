@@ -18,8 +18,11 @@ public class Pixelate extends BasePrivacyMask implements IPrivacyMask{
 	}
 	
 	@Override
-	public void setThresholds(JSONObject aThresholdJson) {
-		this.privacy_threshold = aThresholdJson.optDouble(
-				"masking_threshold", DEF_PRIVACY_THRESHOLD);
+	public void setJsonConfig(JSONObject aJsonConfig) {
+		
+		this.privacy_threshold = aJsonConfig.optDouble(
+				IPrivacyMask.PRIVMASK_ALGO_THRESHOLD, 
+				DEF_PRIVACY_THRESHOLD);
+		
 	}
 }
