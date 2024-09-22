@@ -134,9 +134,13 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				for(String sDetectorModel : mapDetectorResult.keySet())
 				{
 					Map<String, Object> mapDetector = mapDetectorResult.get(sDetectorModel);
+					
 					//
-					curObjs.clearDetection();
-					curObjs.addAll((JSONObject) mapDetector.get(ObjDetectionBasePlugin._KEY_OUTPUT_DETECTION_JSON));
+					if(mapDetector!=null)
+					{
+						curObjs.clearDetection();
+						curObjs.addAll((JSONObject) mapDetector.get(ObjDetectionBasePlugin._KEY_OUTPUT_DETECTION_JSON));
+					}
 					//
 					if(prevObj!=null)
 					{
@@ -154,6 +158,10 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				mapDetections.put(ObjDetectionBasePlugin._KEY_OUTPUT_DETECTION_JSON, curObjs.toJson());
 				mapDetections.put(ObjDetectionBasePlugin._KEY_OUTPUT_TOTAL_COUNT, curObjs.getTotalDetectionCount());
 			}
+
+			if(mapDetections==null)
+				mapDetections = new HashMap<>();
+			
 			
 			Integer iTotalDetection = (Integer) mapDetections.getOrDefault(ObjDetectionBasePlugin._KEY_OUTPUT_TOTAL_COUNT, 0);
 			StringBuffer sbDetectedObj = new StringBuffer();

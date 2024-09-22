@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import hl.common.FileUtil;
 import hl.img.imgfilters.IPrivacyMask;
 import hl.img.imgfilters.PrivacyMaskUtil;
+import hl.objml.opencv.objdetection.dnn.plugins.ultraface.UltraFaceDetector;
 import hl.objml.opencv.objdetection.dnn.plugins.yolo.YoloXDetector;
 import hl.objml2.plugin.ObjDetectionBasePlugin;
 import hl.opencv.util.OpenCvUtil;
@@ -61,15 +62,17 @@ public class TestVideoObjDetection {
 	{
 		OpenCvUtil.initOpenCV();
 		
-		ObjDetectionBasePlugin detector1 = new YoloXDetector();
+		ObjDetectionBasePlugin yolox = new YoloXDetector();
+		ObjDetectionBasePlugin ultraface = new UltraFaceDetector();
+		
 		//ObjDetectionBasePlugin detector2 = new YunetFaceDetector();
 		
-		if(detector1.isPluginOK())
+		if(ultraface.isPluginOK())
 		{
 			File fileOutputFolder = new File("./test/videos/output");
 	
 			VideoObjDetectionPlugin vidObjDetectionPlugin = 
-					new VideoObjDetectionPlugin(new ObjDetectionBasePlugin[] {detector1}, fileOutputFolder);
+					new VideoObjDetectionPlugin(new ObjDetectionBasePlugin[] {ultraface, yolox}, fileOutputFolder);
 			
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"person","face"});
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"car","bus","truck"});
