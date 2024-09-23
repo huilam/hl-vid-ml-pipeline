@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="lib/opencv-4100.jar"/>
 	<classpathentry kind="lib" path="lib/hl-objml-plugin-framework_jdk11_20240830-2249-32.jar" sourcepath="/hl-objml-plugin-framework"/>
 	<classpathentry kind="lib" path="lib/native"/>
+	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_ultraface_jdk11_20240924-0035-49.jar"/>
 	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolox_jdk11_20240916-1548-19.jar"/>
-	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_ultraface_jdk11_20240922-1822-44.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

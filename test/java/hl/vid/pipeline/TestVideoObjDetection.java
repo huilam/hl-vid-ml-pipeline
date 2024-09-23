@@ -77,6 +77,7 @@ public class TestVideoObjDetection {
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"person","face"});
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"car","bus","truck"});
 
+			
 			IPrivacyMask privacyMaskAlgo = 
 					PrivacyMaskUtil.getPrivacyMaskInstance("hl.img.imgfilters.algo.Pixelate");
 			vidObjDetectionPlugin.setPrivacyMaskAlgo(privacyMaskAlgo);
