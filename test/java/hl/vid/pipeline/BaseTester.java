@@ -3,13 +3,12 @@ package hl.vid.pipeline;
 import java.io.File;
 import java.util.Map;
 
-import org.json.JSONObject;
 import org.opencv.core.Mat;
 
 import hl.common.FileUtil;
-import hl.objml2.common.DetectedObj;
+import hl.objml2.common.FrameDetectedObj;
 import hl.objml2.plugin.IObjDetectionPlugin;
-import hl.objml2.plugin.ObjDetectionBasePlugin;
+import hl.objml2.plugin.ObjDetBasePlugin;
 import hl.opencv.util.OpenCvUtil;
 
 public class BaseTester {
@@ -48,7 +47,7 @@ public class BaseTester {
 		return null;
 	}
 	
-	public static void testDetector(ObjDetectionBasePlugin aDetector)
+	public static void testDetector(ObjDetBasePlugin aDetector)
 	{
 		OpenCvUtil.initOpenCV();
 		
@@ -70,7 +69,7 @@ public class BaseTester {
 			System.out.println();
 			System.out.print(" "+(i++)+". Perform test on "+fImg.getName()+" ... ");
 			
-			Mat matImg = ObjDetectionBasePlugin.getCvMatFromFile(fImg);
+			Mat matImg = ObjDetBasePlugin.getCvMatFromFile(fImg);
 			OpenCvUtil.removeAlphaChannel(matImg);
 			
 			Map<String, Object> mapResult = aDetector.detect(matImg, null);
@@ -79,14 +78,14 @@ public class BaseTester {
 			
 			if(mapResult!=null)
 			{
-				DetectedObj objs = new DetectedObj();
-				objs.addAll((JSONObject) mapResult.get(IObjDetectionPlugin._KEY_OUTPUT_DETECTION_JSON));
 				
-				System.out.println("     - Total Count : "+objs.getTotalDetectionCount());
+				FrameDetectedObj frameObjs = (FrameDetectedObj) mapResult.get(IObjDetectionPlugin._KEY_OUTPUT_FRAME_DETECTIONS);
+				
+				System.out.println("     - Total Count : "+frameObjs.getTotalDetectionCount());
 				StringBuffer sb = new StringBuffer();
-				for(String sClassName : objs.getObjClassNames())
+				for(String sClassName : frameObjs.getObjClassNames())
 				{
-					long count = objs.getDetectionCount(sClassName);
+					long count = frameObjs.getDetectionCount(sClassName);
 					
 					if(sb.length()>0)
 						sb.append(",");
@@ -97,7 +96,7 @@ public class BaseTester {
 				System.out.println("     - Detection : "+sb.toString());
 				
 				
-				Mat matOutput = (Mat) mapResult.get(IObjDetectionPlugin._KEY_OUTPUT_ANNOTATED_MAT);
+				Mat matOutput = (Mat) mapResult.get(IObjDetectionPlugin._KEY_OUTPUT_FRAME_ANNOTATED_IMG);
 				
 				if(matOutput!=null && !matOutput.empty())
 				{

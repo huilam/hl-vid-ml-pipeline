@@ -41,21 +41,22 @@ import hl.img.imgfilters.IPrivacyMask;
 import hl.img.imgfilters.PrivacyMaskUtil;
 import hl.objml2.common.DetectedObj;
 import hl.objml2.common.DetectedObjUtil;
-import hl.objml2.plugin.ObjDetectionBasePlugin;
+import hl.objml2.common.FrameDetectedObj;
+import hl.objml2.plugin.ObjDetBasePlugin;
 import hl.opencv.video.plugins.VideoFileReEncodingPlugin;
 
 
 public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 
 	private IPrivacyMask privacymask 			= null;
-	private ObjDetectionBasePlugin[] detectors 	= null;
-	private DetectedObj prevObjs				= null;
+	private ObjDetBasePlugin[] detectors 		= null;
+	private FrameDetectedObj prevObjs			= null;
 	private JSONObject jsonDetections 			= new JSONObject();
 	private List<String> objClassOfInterest 	= new ArrayList<String>();
 	//
-	public VideoObjDetectionPlugin(ObjDetectionBasePlugin[] aDetectors, File aOutputVidFolder)
+	public VideoObjDetectionPlugin(ObjDetBasePlugin[] aDetectors, File aOutputVidFolder)
 	{
-		for(ObjDetectionBasePlugin d : aDetectors)
+		for(ObjDetBasePlugin d : aDetectors)
 		{
 			d.isPluginOK();
 		}
@@ -73,7 +74,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 	{
 		if(this.detectors!=null)
 		{
-			for(ObjDetectionBasePlugin detector : this.detectors)
+			for(ObjDetBasePlugin detector : this.detectors)
 			{
 				detector.addObjClassOfInterest(aObjClassesOfInterest);
 			}
@@ -94,7 +95,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 			{
 				String[] objClasses = (String[]) objClassOfInterest.toArray();
 				this.objClassOfInterest.clear();
-				for(ObjDetectionBasePlugin detector : this.detectors)
+				for(ObjDetBasePlugin detector : this.detectors)
 				{
 					detector.addObjClassOfInterest(objClasses);
 				}
@@ -114,7 +115,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				initDetectors();
 			
 			Map<String, Map<String, Object>> mapDetectorResult = new HashMap<String, Map<String, Object>>();
-			for(ObjDetectionBasePlugin detector : this.detectors)
+			for(ObjDetBasePlugin detector : this.detectors)
 			{
 				//need to combine
 				Map<String, Object> mapCurDetections = detector.detect(matFrame, null);
@@ -129,54 +130,27 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 			}
 			else
 			{
-				DetectedObj prevObj = null;
-				DetectedObj curObjs = new DetectedObj();
-				for(String sDetectorModel : mapDetectorResult.keySet())
-				{
-					Map<String, Object> mapDetector = mapDetectorResult.get(sDetectorModel);
-					
-					//
-					if(mapDetector!=null)
-					{
-						curObjs.clearDetection();
-						curObjs.addAll((JSONObject) mapDetector.get(ObjDetectionBasePlugin._KEY_OUTPUT_DETECTION_JSON));
-					}
-					//
-					if(prevObj!=null)
-					{
-						curObjs = DetectedObjUtil.mergeDetectedObj(curObjs, prevObj, 0.6f);
-					}
-					else
-					{
-						prevObj = new DetectedObj();
-					}
-					//
-					prevObj.clearDetection();
-					prevObj.addAll(curObjs.toJson());
-				}
-				
-				mapDetections.put(ObjDetectionBasePlugin._KEY_OUTPUT_DETECTION_JSON, curObjs.toJson());
-				mapDetections.put(ObjDetectionBasePlugin._KEY_OUTPUT_TOTAL_COUNT, curObjs.getTotalDetectionCount());
+				//TODO Merge and NMS multi-detections
 			}
 
 			if(mapDetections==null)
 				mapDetections = new HashMap<>();
 			
-			
-			Integer iTotalDetection = (Integer) mapDetections.getOrDefault(ObjDetectionBasePlugin._KEY_OUTPUT_TOTAL_COUNT, 0);
+			long lTotalDetection = 0;
+			FrameDetectedObj frameObjs = (FrameDetectedObj) mapDetections.getOrDefault(ObjDetBasePlugin._KEY_OUTPUT_FRAME_DETECTIONS, null);
 			StringBuffer sbDetectedObj = new StringBuffer();
 			
-			if(iTotalDetection>0)
-			{
-				JSONObject jsonData = (JSONObject) mapDetections.get(ObjDetectionBasePlugin._KEY_OUTPUT_DETECTION_JSON);			
-				DetectedObj objs = new DetectedObj();
-				objs.addAll(jsonData);
+			if(frameObjs!=null)
+			{	
+				lTotalDetection = frameObjs.getTotalDetectionCount();
 				
-				for(String sClassName : objs.getObjClassNames())
+				for(String sClassName : frameObjs.getObjClassNames())
 				{
-					JSONObject[] jsonDetections = objs.getDetectedObjByObjClassName(sClassName);
+					List<DetectedObj> listClassObjs = frameObjs.getDetectedObjByObjClassName(sClassName);
+					if(listClassObjs==null)
+						listClassObjs = new ArrayList<>();
 					
-					long count = jsonDetections.length;
+					long count = listClassObjs.size();
 					 
 					if(sbDetectedObj.length()>0)
 						sbDetectedObj.append(",");
@@ -189,11 +163,11 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 					
 					// Assign Tracking Id
 					int iSeqNo = 0;
-					for(JSONObject jsonCurObj : jsonDetections)
+					for(DetectedObj curObj : listClassObjs)
 					{
 						if(privacymask!=null)
 						{
-							Rect2d objBox 			= DetectedObj.getBoundingBox(jsonCurObj);
+							Rect2d objBox = curObj.getObj_bounding_box();
 							if(objBox!=null)
 							{
 								listRect2d.add(objBox);
@@ -201,10 +175,11 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 						}
 						
 						iSeqNo++;
-						DetectedObj.updObjTrackingId(jsonCurObj, sClassName+"_"+aCurFrameNo+"_"+iSeqNo);
+						curObj.setObj_tmp_trackingid(curObj.getObj_trackingid());
+						curObj.setObj_trackingid(sClassName+"_"+aCurFrameNo+"_"+iSeqNo);
 						if(prevObjs!=null)
 						{
-							DetectedObjUtil.updTrackingIdWithPrevDetections(jsonCurObj, prevObjs, 0.70);
+							DetectedObjUtil.updTrackingIdWithPrevDetections(curObj, prevObjs, 0.70);
 						}
 					}
 					
@@ -219,13 +194,13 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				JSONObject jsonFrameData = new JSONObject();
 				jsonFrameData.put("FrameNo", aCurFrameNo);
 				jsonFrameData.put("TimeStampMs", aCurFrameMs);
-				jsonFrameData.put("TotalDetection",  iTotalDetection);
-				jsonFrameData.put("Detections",  objs.toJson());
+				jsonFrameData.put("TotalDetection",  lTotalDetection);
+				jsonFrameData.put("Detections",  frameObjs.toJson());
 				
 				jsonDetections.put(String.valueOf(aCurFrameNo), jsonFrameData);
 				
-				prevObjs = objs;
-				Mat matOutput = DetectedObjUtil.annotateImage(matFrame, objs);
+				prevObjs = frameObjs;
+				Mat matOutput = DetectedObjUtil.annotateImage(matFrame, frameObjs);
 				matFrame.release();
 				matFrame = matOutput;
 			}
@@ -235,7 +210,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				sbDetectedObj.insert(0, " - ");
 			}
 			
-			System.out.println("  Frame #"+aCurFrameNo+" Detection:"+iTotalDetection+" "+sbDetectedObj.toString());
+			System.out.println("  Frame #"+aCurFrameNo+" Detection:"+lTotalDetection+" "+sbDetectedObj.toString());
 			//
 		}
 		
@@ -266,7 +241,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 		{
 			StringBuffer sbDetectorNames = new StringBuffer();
 			StringBuffer sbDetectorModels = new StringBuffer();
-			for(ObjDetectionBasePlugin detector : this.detectors)
+			for(ObjDetBasePlugin detector : this.detectors)
 			{
 				if(sbDetectorNames.length()>0)
 					sbDetectorNames.append(",");
