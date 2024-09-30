@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import hl.common.FileUtil;
 import hl.img.imgfilters.IPrivacyMask;
 import hl.img.imgfilters.PrivacyMaskUtil;
+import hl.objml.opencv.objdetection.dnn.plugins.humanseg.HumanSegDetector;
 import hl.objml.opencv.objdetection.dnn.plugins.ultraface.UltraFaceDetector;
 import hl.objml.opencv.objdetection.dnn.plugins.yolo.YoloXDetector;
 import hl.objml2.plugin.ObjDetBasePlugin;
@@ -60,13 +61,13 @@ public class TestVideoObjDetection {
 	
 	public static void main(String args[]) throws Exception
 	{
-		OpenCvUtil.initOpenCV();
+		//OpenCvUtil.initOpenCV();
 		
 		ObjDetBasePlugin yolox = new YoloXDetector();
-		ObjDetBasePlugin ultraface = new UltraFaceDetector();
-		//ObjDetectionBasePlugin vitpose = new VitPoseDetector();
+		//ObjDetBasePlugin ultraface = new UltraFaceDetector();
+		ObjDetBasePlugin humanseg = new HumanSegDetector();
 		
-		if(ultraface.isPluginOK())
+		if(humanseg.isPluginOK())
 		{
 			File fileOutputFolder = new File("./test/videos/output");
 	

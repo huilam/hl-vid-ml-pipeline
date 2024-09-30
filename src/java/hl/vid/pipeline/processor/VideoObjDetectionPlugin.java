@@ -42,6 +42,7 @@ import hl.img.imgfilters.PrivacyMaskUtil;
 import hl.objml2.common.DetectedObj;
 import hl.objml2.common.DetectedObjUtil;
 import hl.objml2.common.FrameDetectedObj;
+import hl.objml2.common.FrameDetectionMeta;
 import hl.objml2.plugin.ObjDetBasePlugin;
 import hl.opencv.video.plugins.VideoFileReEncodingPlugin;
 
@@ -192,9 +193,9 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				}
 				
 				JSONObject jsonFrameData = new JSONObject();
-				jsonFrameData.put("FrameNo", aCurFrameNo);
-				jsonFrameData.put("TimeStampMs", aCurFrameMs);
-				jsonFrameData.put("TotalDetection",  lTotalDetection);
+				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_ID , aCurFrameNo);
+				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_TIMESTAMP, aCurFrameMs);
+				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_ID,  lTotalDetection);
 				jsonFrameData.put("Detections",  frameObjs.toJson());
 				
 				jsonDetections.put(String.valueOf(aCurFrameNo), jsonFrameData);

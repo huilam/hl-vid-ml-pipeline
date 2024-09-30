@@ -8,12 +8,13 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/hl-common_jdk11_20240815-1518-33.jar"/>
-	<classpathentry kind="lib" path="lib/hl-opencv_jdk11_20240821-2217-44.jar"/>
 	<classpathentry kind="lib" path="lib/json-20220924.jar"/>
 	<classpathentry kind="lib" path="lib/opencv-4100.jar"/>
 	<classpathentry kind="lib" path="lib/native"/>
 	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_ultraface_jdk11_20240928-2322-10.jar"/>
-	<classpathentry kind="lib" path="lib/hl-objml-plugin-framework_jdk11_20240928-2328-53.jar"/>
 	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolox_jdk11_20240928-2352-38.jar"/>
+	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_humanseg_jdk11_20240929-1622-54.jar"/>
+	<classpathentry kind="lib" path="lib/hl-opencv_jdk11_20240821-2217-44.jar" sourcepath="/hl-opencv"/>
+	<classpathentry kind="lib" path="lib/hl-objml-plugin-framework_jdk11_20240930-1321-09.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
