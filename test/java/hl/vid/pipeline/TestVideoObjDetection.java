@@ -29,10 +29,8 @@ import hl.common.FileUtil;
 import hl.img.imgfilters.IPrivacyMask;
 import hl.img.imgfilters.PrivacyMaskUtil;
 import hl.objml.opencv.objdetection.dnn.plugins.humanseg.HumanSegDetector;
-import hl.objml.opencv.objdetection.dnn.plugins.ultraface.UltraFaceDetector;
 import hl.objml.opencv.objdetection.dnn.plugins.yolo.YoloXDetector;
 import hl.objml2.plugin.ObjDetBasePlugin;
-import hl.opencv.util.OpenCvUtil;
 import hl.opencv.video.processor.VideoProcessor;
 import hl.vid.pipeline.processor.VideoObjDetectionPlugin;
 
@@ -65,10 +63,9 @@ public class TestVideoObjDetection {
 		
 		ObjDetBasePlugin yolox = new YoloXDetector();
 		//ObjDetBasePlugin ultraface = new UltraFaceDetector();
-		ObjDetBasePlugin humanseg = new HumanSegDetector();
+		//ObjDetBasePlugin humanseg = new HumanSegDetector();
 		
-		if(humanseg.isPluginOK())
-		{
+		
 			File fileOutputFolder = new File("./test/videos/output");
 	
 			VideoObjDetectionPlugin vidObjDetectionPlugin = 
@@ -78,9 +75,9 @@ public class TestVideoObjDetection {
 			vidObjDetectionPlugin.addObjOfInterest(new String[]{"car","bus","truck"});
 
 			
-			IPrivacyMask privacyMaskAlgo = 
-					PrivacyMaskUtil.getPrivacyMaskInstance("hl.img.imgfilters.algo.Pixelate");
-			vidObjDetectionPlugin.setPrivacyMaskAlgo(privacyMaskAlgo);
+			//IPrivacyMask privacyMaskAlgo = 
+		//			PrivacyMaskUtil.getPrivacyMaskInstance("hl.img.imgfilters.algo.Pixelate");
+	//		vidObjDetectionPlugin.setPrivacyMaskAlgo(privacyMaskAlgo);
 			
 			VideoProcessor vidProcessor = new VideoProcessor();
 			for(File fileVid : getTestVideoFiles())
@@ -96,6 +93,6 @@ public class TestVideoObjDetection {
 					System.out.println(" Output Json : "+fileOutput.getAbsolutePath());
 				}
 			}
-		}
+		
 	}
 }
