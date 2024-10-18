@@ -42,7 +42,6 @@ import hl.img.imgfilters.PrivacyMaskUtil;
 import hl.objml2.common.DetectedObj;
 import hl.objml2.common.DetectedObjUtil;
 import hl.objml2.common.FrameDetectedObj;
-import hl.objml2.common.FrameDetectionMeta;
 import hl.objml2.plugin.ObjDetBasePlugin;
 import hl.opencv.video.plugins.VideoFileReEncodingPlugin;
 
