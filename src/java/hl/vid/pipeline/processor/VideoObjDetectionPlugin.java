@@ -142,7 +142,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 			
 			if(frameObjs!=null)
 			{	
-				lTotalDetection = frameObjs.getTotalDetectionCount();
+				lTotalDetection = frameObjs.getFrame_total_detection();
 				
 				for(String sClassName : frameObjs.getObjClassNames())
 				{
@@ -194,7 +194,7 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 				JSONObject jsonFrameData = new JSONObject();
 				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_ID , aCurFrameNo);
 				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_TIMESTAMP, aCurFrameMs);
-				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_ID,  lTotalDetection);
+				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_TOTAL_DETECTION,  lTotalDetection);
 				jsonFrameData.put("Detections",  frameObjs.toJson());
 				
 				jsonDetections.put(String.valueOf(aCurFrameNo), jsonFrameData);
