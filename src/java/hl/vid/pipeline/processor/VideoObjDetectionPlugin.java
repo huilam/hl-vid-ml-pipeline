@@ -42,6 +42,7 @@ import hl.img.imgfilters.PrivacyMaskUtil;
 import hl.objml2.common.DetectedObj;
 import hl.objml2.common.DetectedObjUtil;
 import hl.objml2.common.FrameDetectedObj;
+import hl.objml2.plugin.MLPluginFrameOutput;
 import hl.objml2.plugin.ObjDetBasePlugin;
 import hl.opencv.video.plugins.VideoFileReEncodingPlugin;
 
@@ -118,7 +119,8 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 			for(ObjDetBasePlugin detector : this.detectors)
 			{
 				//need to combine
-				Map<String, Object> mapCurDetections = detector.detect(matFrame, null);
+				MLPluginFrameOutput output = detector.detect(matFrame, null);
+				Map<String, Object> mapCurDetections = output.getDetectionOutputMap();
 				
 				mapDetectorResult.put(detector.getPluginMLModelFileName(), mapCurDetections);
 			}
@@ -191,13 +193,9 @@ public class VideoObjDetectionPlugin extends VideoFileReEncodingPlugin {
 					
 				}
 				
-				JSONObject jsonFrameData = new JSONObject();
-				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_ID , aCurFrameNo);
-				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_TIMESTAMP, aCurFrameMs);
-				jsonFrameData.put(FrameDetectedObj.JSON_FRAME_TOTAL_DETECTION,  lTotalDetection);
-				jsonFrameData.put("Detections",  frameObjs.toJson());
-				
-				jsonDetections.put(String.valueOf(aCurFrameNo), jsonFrameData);
+				frameObjs.setFrame_id(aCurFrameNo);
+				frameObjs.setFrame_timestamp_ms(aCurFrameMs);
+				jsonDetections.put(String.valueOf(aCurFrameNo), frameObjs.toJson());
 				
 				prevObjs = frameObjs;
 				Mat matOutput = DetectedObjUtil.annotateImage(matFrame, frameObjs);

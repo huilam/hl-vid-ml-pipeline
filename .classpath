@@ -7,15 +7,14 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/opencv-4100.jar"/>
 	<classpathentry kind="lib" path="lib/native"/>
-	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_humanseg_jdk11_20241015-0054-52.jar"/>
-	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_ultraface_jdk11_20241015-0054-15.jar"/>
-	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolox_jdk11_20241015-0052-53.jar"/>
-	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolov11_jdk11_20241017-1501-32.jar"/>
-	<classpathentry kind="lib" path="lib/hl-common_jdk11_20241018-1056-05.jar"/>
-	<classpathentry kind="lib" path="lib/json-20240303.jar"/>
-	<classpathentry kind="lib" path="lib/hl-opencv_jdk11_20241018-1445-12.jar"/>
-	<classpathentry kind="lib" path="lib/hl-objml-plugin-framework_jdk11_20241104-1506-16.jar"/>
+	<classpathentry kind="lib" path="lib/hl-common_jdk17_20250428-1009-09.jar"/>
+	<classpathentry kind="lib" path="lib/hl-objml-plugin-framework_jdk17_20250915-1415-34.jar"/>
+	<classpathentry kind="lib" path="lib/json-20250517.jar"/>
+	<classpathentry kind="lib" path="lib/opencv-4120.jar"/>
+	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolov11_jdk17_20250922-1542-36.jar"/>
+	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yunet_face_jdk17_20250922-1543-04.jar"/>
+	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_ultraface_jdk17_20250923-0128-32.jar"/>
+	<classpathentry kind="lib" path="lib/hl-opencv_jdk17_20250923-2253-41.jar" sourcepath="/hl-opencv"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

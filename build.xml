@@ -1,0 +1,61 @@
+<project name="hl-vid-ml-pipeline" default="release" basedir=".">
+
+	<property name="src" location="src"/>
+	<property name="test" location="test"/>
+	<property name="build" location="build"/>
+	<property name="releases" location="releases"/>
+	<property name="jdk.ver" value="17"/>
+	
+	<tstamp>
+	    <format property="buildno" pattern="yyyyMMdd-HHmm-ss"/>
+	</tstamp>
+	
+	<target name="compile" depends="clean">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" debug="true" source="${jdk.ver}" target="${jdk.ver}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+		<javac srcdir="${test}" destdir="${build}" debug="true" source="${jdk.ver}" target="${jdk.ver}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="${build}/version"/>
+		<touch file="${build}/version/${ant.project.name}_${buildno}"/>
+		<jar jarfile="${build}/${ant.project.name}_jdk${jdk.ver}_${buildno}.jar" basedir="${build}" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="${build}"/>
+	</target>
+	
+	<target name="release" depends="jar">
+		<mkdir dir="${build}/${ant.project.name}_${buildno}"/>
+		<!--
+		<copy todir="${build}/${ant.project.name}_${buildno}">
+			<fileset dir="${basedir}/src/main/shell" includes="*.sh" />
+			<fileset dir="${basedir}/src/main/shell" includes="*.bat" />
+			<fileset dir="${basedir}/src/main/shell" includes="Readme.*" />
+		</copy>
+		-->
+		<copy todir="${build}/${ant.project.name}_${buildno}/lib">
+			<fileset dir="${build}" includes="${ant.project.name}_*.jar" />
+			<fileset dir="${basedir}/lib" includes="*.jar" />
+			<fileset dir="${test}/addons" includes="*.jar" />
+		</copy>
+		
+		<zip destfile="${releases}/${ant.project.name}-${buildno}.zip" 
+			basedir="${build}/${ant.project.name}_${buildno}" />
+	</target>
+	
+	<path id="compile.classpath">
+		<fileset dir="${basedir}">
+		    <include name="lib/*.jar" />
+		    <include name="lib/**/*.jar" />
+		</fileset>
+		<fileset dir="${test}">
+		    <include name="addons/*.jar" />
+		</fileset>
+	</path>
+</project>

@@ -28,10 +28,6 @@ import org.json.JSONObject;
 import hl.common.FileUtil;
 import hl.img.imgfilters.IPrivacyMask;
 import hl.img.imgfilters.PrivacyMaskUtil;
-import hl.objml.opencv.objdetection.dnn.plugins.humanseg.HumanSegDetector;
-import hl.objml.opencv.objdetection.dnn.plugins.ultraface.UltraFaceDetector;
-import hl.objml.opencv.objdetection.dnn.plugins.yolov11.YoloV11Detector;
-import hl.objml.opencv.objdetection.dnn.plugins.yolox.YoloXDetector;
 import hl.objml2.plugin.ObjDetBasePlugin;
 import hl.opencv.video.processor.VideoProcessor;
 import hl.vid.pipeline.processor.VideoObjDetectionPlugin;
@@ -63,26 +59,28 @@ public class TestVideoObjDetection {
 	{
 		//OpenCvUtil.initOpenCV();
 		
-		ObjDetBasePlugin yolox 		= new YoloXDetector();
-		ObjDetBasePlugin yolov11 	= new YoloV11Detector();
-		ObjDetBasePlugin ultraface 	= new UltraFaceDetector();
-		ObjDetBasePlugin humanseg 	= new HumanSegDetector();
+		System.setProperty("OPENCV_AVFOUNDATION_SKIP_AUTH", "1");
+		
+		ObjDetBasePlugin ultraFace 	= new hl.objml.opencv.objdetection.dnn.plugins.ultraface.UltraFaceDetector();
+		ObjDetBasePlugin yunetFace 	= new hl.objml.opencv.objdetection.dnn.plugins.yunet.face.YunetFaceDetector();
 		
 		
-			File fileOutputFolder = new File("./test/videos/output");
+			File fileOutputFolder = new File("./test/videos/output/"+System.currentTimeMillis());
+			fileOutputFolder.mkdirs();
 	
 			VideoObjDetectionPlugin vidObjDetectionPlugin = 
-					new VideoObjDetectionPlugin(new ObjDetBasePlugin[] {yolov11}, fileOutputFolder);
+					new VideoObjDetectionPlugin(new ObjDetBasePlugin[] {yunetFace}, fileOutputFolder);
 			
-			vidObjDetectionPlugin.addObjOfInterest(new String[]{"person","face"});
+			//vidObjDetectionPlugin.addObjOfInterest(new String[]{"person", "face"});
 			//vidObjDetectionPlugin.addObjOfInterest(new String[]{"car","bus","truck"});
 
 			
 			IPrivacyMask privacyMaskAlgo = 
-					PrivacyMaskUtil.getPrivacyMaskInstance("hl.img.imgfilters.algo.Pixelate");
+					PrivacyMaskUtil.getPrivacyMaskInstance("hl.img.imgfilters.algo.Blur");
 			vidObjDetectionPlugin.setPrivacyMaskAlgo(privacyMaskAlgo);
 			
 			VideoProcessor vidProcessor = new VideoProcessor();
+			vidProcessor.
 			for(File fileVid : getTestVideoFiles())
 			{
 				System.out.println(" Processing "+fileVid.getName()+" ...");
