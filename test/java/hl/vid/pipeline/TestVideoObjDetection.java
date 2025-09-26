@@ -80,7 +80,6 @@ public class TestVideoObjDetection {
 			vidObjDetectionPlugin.setPrivacyMaskAlgo(privacyMaskAlgo);
 			
 			VideoProcessor vidProcessor = new VideoProcessor();
-			vidProcessor.
 			for(File fileVid : getTestVideoFiles())
 			{
 				System.out.println(" Processing "+fileVid.getName()+" ...");
