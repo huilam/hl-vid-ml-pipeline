@@ -1,0 +1,1 @@
+java -cp "lib/*:." hl.vid.pipeline.TestVideoObjDetection "$@"

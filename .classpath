@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yolov11_jdk17_20250922-1542-36.jar"/>
 	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_yunet_face_jdk17_20250922-1543-04.jar"/>
 	<classpathentry kind="lib" path="test/addons/hl-objml-plugin_ultraface_jdk17_20250923-0128-32.jar"/>
-	<classpathentry kind="lib" path="lib/hl-opencv_jdk17_20250923-2253-41.jar" sourcepath="/hl-opencv"/>
+	<classpathentry kind="lib" path="lib/hl-opencv_jdk17_20250926-2333-52.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
